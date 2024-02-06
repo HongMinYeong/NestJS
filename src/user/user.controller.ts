@@ -1,5 +1,5 @@
 // user.controller.ts
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('/user')
@@ -9,5 +9,14 @@ export class UserController {
   @Get('/main')
   async getMainPage() {
     return this.userService.getMainPage();
+  }
+
+  @Post('/register')
+  async register(@Body() body) {
+    const email = body?.email;
+    const password = body?.password;
+
+    //여기서 this -> UserController
+    return this.userService.register(email, password);
   }
 }
