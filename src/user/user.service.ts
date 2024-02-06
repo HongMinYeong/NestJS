@@ -4,9 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
-import * as dotenv from 'dotenv';
-// dotenv 패키지 직접 사용
-dotenv.config();
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
@@ -15,6 +13,7 @@ export class UserService {
     // Repository를 Service에 주입
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly configService: ConfigService,
   ) {}
 
   async getMainPage() {
@@ -31,7 +30,7 @@ export class UserService {
       throw new BadRequestException('이미 해당 이메일이 존재합니다.');
     }
     //10은 salt값
-    console.log(process.env.SALT);
+    console.log(Number(this.configService.get('SALT')));
     const hashedPassword = await hash(password, 10);
     //userRepository는 DB에 쿼리문을 날려주는 아이
     //await 써서 결과값 받아올때까지 기다려야함
