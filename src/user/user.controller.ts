@@ -2,6 +2,8 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { User } from 'src/decorators/user.decorator';
+import { LoggedInGuard } from 'src/auth/guards/logged-in.guard';
 
 @Controller('/user')
 export class UserController {
@@ -20,9 +22,15 @@ export class UserController {
     //여기서 this -> UserController
     return this.userService.register(email, password);
   }
+  // @UseGuards(JwtAuthGuard)
+  // @Get('user-info')
+  // async getUserInfo() {
+  //   return 'user-info Page';
+  // }
+
   @UseGuards(JwtAuthGuard)
-  @Get('user-info')
-  async getUserInfo() {
-    return 'user-info Page';
+  @Get()
+  async getUserInfo(@User() user) {
+    return user;
   }
 }
